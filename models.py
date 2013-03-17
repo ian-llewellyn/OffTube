@@ -18,7 +18,7 @@ class Video(models.Model):
     def __unicode__(self):
         # Example:
         # 2013-12-12T14:36:15: Ready: Clip of a Man on a Bridge
-        return "%d: %s: %s" % (self.upload_date, self.status, self.title)
+        return "%s: %s: %s" % (self.upload_date.ctime(), self.status, self.title)
 
 #class VideoStatsTracker(models.Model):
 #    viewer_ip = models.IPAddressField()
