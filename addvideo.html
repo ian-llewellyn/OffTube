@@ -1,0 +1,16 @@
+<!-- From: http://www.360doc.com/content/10/0426/21/11586_25036463.shtml -->
+<form action="/video/upload/" method="post" enctype="multipart/form-data">
+<table>
+<input type="hidden" name="relatedsubmission_id" value="{{submission.id}}" />
+<tr valign="top">
+<td>Video hochladen:<br/>(Nur AVI und FLV werden akzeptiert)</td>
+<td>{{ form.videoupload}} {{ form.videoupload_file }}<br/>
+Kommentar: <input type="text" name="comment"   style="width:100%" maxlength="250">
+</td>
+</tr>
+<tr valign="top">
+<td> </td>
+<td><input type="submit" Value="Hochladen"/> </td>
+</tr>
+</table>
+</form>
