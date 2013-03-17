@@ -9,8 +9,8 @@ class Video(models.Model):
     thumbnail = models.CharField(max_length=100)
     video_file_ogg = models.CharField(max_length=100)
     video_file_src = models.FileField(upload_to='offtube/%Y/%m%d/')
-    upload_date = models.DateTimeField()
-    hits = models.IntegerField()
+    upload_date = models.DateTimeField(auto_now_add=True)
+    hits = models.PositiveIntegerField(default=0)
     #privacy_profile = models.ForeignKey(PrivacyProfile)
     status = models.CharField(max_length=20, choices=[("Uploading", "Uploading"), ("Transcoding", "Transcoding"), ("Ready", "Ready"), ("Pending", "Pending")])
     # A field to measure popularity over time
@@ -19,6 +19,11 @@ class Video(models.Model):
         # Example:
         # 2013-12-12T14:36:15: Ready: Clip of a Man on a Bridge
         return "%d: %s: %s" % (self.upload_date, self.status, self.title)
+
+#class VideoStatsTracker(models.Model):
+#    viewer_ip = models.IPAddressField()
+#    date = models.DateTimeField()
+#    duration = models.PositiveIntegerField()
 
 #class PrivacyProfile(models.Model):
 #    title = models.CharField(max_length=160)
