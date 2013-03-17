@@ -1,10 +1,12 @@
 def convertvideo (video):
     if video is None:
         return "Kein Video im Upload gefunden"
+
     filename = video.videoupload
     print "Konvertiere Quelldatei: %s" + filename
     if filename is None:
         return "Video mit unbekanntem Dateinamen"
+
     sourcefile = "%s%s" % (settings.MEDIA_ROOT,filename)
     flvfilename = "%s.flv" % video.id
     thumbnailfilename = "%svideos/flv/%s.png" % (settings.MEDIA_ROOT, video.id)
@@ -16,11 +18,13 @@ def convertvideo (video):
     print ("Target : %s" % targetfile)
     print ("FFMPEG: %s" % ffmpeg)
     print ("FLVTOOL: %s" % flvtool)
+
     try:
         ffmpegresult = commands.getoutput(ffmpeg)
         print "-------------------- FFMPEG ------------------"
         print ffmpegresult
-        # Check if file exists and is &gt; 0 Bytes
+
+        # Check if file exists and is > 0 Bytes
         try:
             s = os.stat(targetfile)
             print s
@@ -29,20 +33,25 @@ def convertvideo (video):
                 print "File is 0 Bytes gross"
                 os.remove(targetfile)
                 return ffmpegresult
+
             print "Dateigroesse ist %i" % fsize
+
         except:
             print sys.exc_info()
             print "File %s scheint nicht zu existieren" % targetfile
             return ffmpegresult
+
         flvresult = commands.getoutput(flvtool)
         print "-------------------- FLVTOOL ------------------"
         print flvresult
         grab = commands.getoutput(grabimage)
         print "-------------------- GRAB IMAGE ------------------"
         print grab
+
     except:
         print sys.exc_info()
         return sys.exc_info[1]
+
     video.flvfilename = flvfilename
     video.save()
     return None
