@@ -1,8 +1,8 @@
 # Create your views here.
-from django.http import HttpResponse # Probably won't need this eventually
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 #from django.template import Context, loader
 from django.shortcuts import render
-from offtube.models import Video
+from offtube.models import Video, PartialVideoForm
 
 def index(request):
     # Simplest way:
@@ -17,18 +17,45 @@ def index(request):
     #return HttpResponse(template.render(context))
 
     # The shortcut way:
-    recent_uploads = Video.objects.all()[0:1]
+    recent_uploads = Video.objects.order_by('-upload_date') # FIXME: Limit required here.
     context = {'recent_uploads': recent_uploads}
     return render(request, 'offtube/index.html', context)
 
 def play(request, **kwargs):
-    if kwargs['video_id']:
-        vid_id = kwargs['video_id']
-        return HttpResponse("This is the play page for video: %s." % vid_id)
-    return HttpResponse("Error: You need the video_id to play.")
+    if not kwargs['video_id']:
+        return HttpResponse("Error: You need the video_id to play.")
+    vid_id = kwargs['video_id']
+    try:
+        video = Video.objects.get(id=vid_id)
+    except Video.DoesNotExist:
+        return HttpResponseNotFound("Nope.")
+    context = {'video': video}
+    return render(request, 'offtube/play.html', context)
 
 def upload(request):
-    return HttpResponse("This is the upload page.")
+    if request.method == 'POST':
+        # The form has been submitted...
+        form = PartialVideoForm(request.POST, request.FILES)
+        if form.is_valid():
+            # The form is valid
+            video = form.save(commit=False)
+            #video.upload_user = 
+            video.thumbnail = 'xyz.png'
+            video.video_file_ogg = video.video_file_src
+            video.status = 'Pending'
+            video.save()
+            return HttpResponseRedirect('/offtube/')
+            # See the output of ffmpeg
+        # The POSTed form is invalid
+        #j = 5
+        #ak = "abc: %s :cba" % type(j)
+        #raise Ecxeption
+        #return HttpResponse(ak)
+    else:
+        # First visit - display the form only
+        form = PartialVideoForm()
+    context = {'video_form': form}
+    return render(request, 'offtube/upload.html', context)
 
 """
 From: http://www.360doc.com/content/10/0426/21/11586_25036463.shtml

@@ -1,16 +1,37 @@
-<!-- From: http://www.360doc.com/content/10/0426/21/11586_25036463.shtml -->
-<form action="/video/upload/" method="post" enctype="multipart/form-data">
-<table>
-<input type="hidden" name="relatedsubmission_id" value="{{submission.id}}" />
-<tr valign="top">
-<td>Video hochladen:<br/>(Nur AVI und FLV werden akzeptiert)</td>
-<td>{{ form.videoupload}} {{ form.videoupload_file }}<br/>
-Kommentar: <input type="text" name="comment"   style="width:100%" maxlength="250">
-</td>
-</tr>
-<tr valign="top">
-<td> </td>
-<td><input type="submit" Value="Hochladen"/> </td>
-</tr>
-</table>
-</form>
+{% extends "offtube/base.html" %}
+{% block content %}
+                <!-- From: http://www.360doc.com/content/10/0426/21/11586_25036463.shtml -->
+                <form action="{% url offtube:upload %}" method="post" enctype="multipart/form-data">
+                    <fieldset>
+                        <legend>Video Upload</legend>
+                        {% csrf_token %}
+                        {% if video_form %}
+                        {% if video_form.errors %}
+                        <div class="alert">
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                            <strong>Error!</strong> {{ video_form.errors }}
+                        </div>
+                        {% endif %}
+                        {% if video_form.cleaned_data %}
+                        <div class="info">
+                            <button type="button" class="close" data-dismiss="info">&times;</button>
+                            <strong>Info:</strong> {{ video_form.cleaned_data }}
+                        </div>
+                        {% endif %}
+                        {{ video_form }}
+                        {% endif %}<br />
+                        <input class="btn btn-primary" type="submit">
+                    </fieldset>
+                </form>
+{% endblock %}
+title
+#upload_user
+description
+#thumbnail
+#video_file_ogg
+video_file_src
+#upload_date
+#hits
+#privacy_profile
+#status [("Uploading", "Uploading"), ("Tra   nscoding", "Transcoding"), ("Ready", "Ready"), ("Pending", "Pending")]
+
