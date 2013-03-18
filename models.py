@@ -8,7 +8,7 @@ class Video(models.Model):
     description = models.TextField(blank=True)
     thumbnail = models.CharField(max_length=100)
     video_file_ogg = models.CharField(max_length=100)
-    video_file_src = models.FileField(upload_to='offtube/%Y/%m%d/')
+    video_file_src = models.FileField(upload_to='offtube/uploads/%Y/%m%d/')
     upload_date = models.DateTimeField(auto_now_add=True)
     hits = models.PositiveIntegerField(default=0)
     #privacy_profile = models.ForeignKey(PrivacyProfile)
