@@ -17,7 +17,7 @@ def index(request):
     #return HttpResponse(template.render(context))
 
     # The shortcut way:
-    recent_uploads = Video.objects.order_by('-upload_date') # FIXME: Limit required here.
+    recent_uploads = Video.objects.order_by('-upload_date').exclude(status='Pending') # FIXME: Limit required here.
     context = {'recent_uploads': recent_uploads}
     return render(request, 'offtube/index.html', context)
 
@@ -29,6 +29,8 @@ def play(request, **kwargs):
         video = Video.objects.get(id=vid_id)
     except Video.DoesNotExist:
         return HttpResponseNotFound("Nope.")
+    video.hits += 1
+    video.save()
     context = {'video': video}
     return render(request, 'offtube/play.html', context)
 
@@ -40,9 +42,9 @@ def upload(request):
             # The form is valid
             video = form.save(commit=False)
             #video.upload_user = 
-            video.thumbnail = 'xyz.png'
-            video.video_file_ogg = video.video_file_src
+            video.thumbnail = video.get_location('png')
             video.status = 'Pending'
+            video.video_file_ogg = video.get_location('ogg')
             video.save()
             return HttpResponseRedirect('/offtube/')
             # See the output of ffmpeg

@@ -10,3 +10,7 @@
 .navbar-inner {
   min-height: 65px;
 }
+
+.navbar {
+  margin-bottom: 25px;
+}

@@ -7,13 +7,13 @@
                         {% csrf_token %}
                         {% if video_form %}
                         {% if video_form.errors %}
-                        <div class="alert">
+                        <div class="alert alert-error">
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
                             <strong>Error!</strong> {{ video_form.errors }}
                         </div>
                         {% endif %}
                         {% if video_form.cleaned_data %}
-                        <div class="info">
+                        <div class="alert alert-info">
                             <button type="button" class="close" data-dismiss="info">&times;</button>
                             <strong>Info:</strong> {{ video_form.cleaned_data }}
                         </div>
