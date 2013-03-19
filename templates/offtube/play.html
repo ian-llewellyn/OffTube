@@ -2,7 +2,7 @@
 {% block content %}
 <!-- From: http://www.360doc.com/content/10/0426/21/11586_25036463.shtml -->
 {% if video %}
-<video style="span9" src="{{ MEDIA_URL }}{{ video.video_file_ogg }}" controls></video>
+<video class="span9" src="{{ MEDIA_URL }}{{ video.video_file_ogg }}" controls></video>
 <h2>{{video.title}}</h2>
 <p>{{ video.description }}</p>
 <p>Hits: {{ video.hits }}</p>
