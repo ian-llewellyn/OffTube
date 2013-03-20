@@ -5,7 +5,7 @@
                 <ul class="thumbnails">
 {% for video in recent_uploads %}
                     <li class="span3" onClick="window.location.href='{% url offtube:play video.id %}'">
-                        <div class="thumbnail">`
+                        <div class="thumbnail">
                             <img src="{{ MEDIA_URL }}{{ video.thumbnail }}"><br />
                             <h4>{{ video.title|title }}</h4>
                             <p>{{ video.description }}</p>

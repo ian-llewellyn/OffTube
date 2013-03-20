@@ -1,0 +1,13 @@
+{% extends "offtube/base.html" %}
+{% block content %}
+    <div>
+{% if form %}
+        <form action="" method="post">
+        {% csrf_token %}
+        {{ form }}
+        <input type="hidden" name="next" value="{{ next }}"/><br />
+        <input class="btn btn-primary" type="submit" value="Log in" />
+        </form>
+{% endif %}
+    </div>
+{% endblock %}

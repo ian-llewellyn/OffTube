@@ -50,7 +50,7 @@ class Video(models.Model):
 class PartialVideoForm(ModelForm):
     class Meta:
         model = Video
-        fields = ['title', 'description', 'video_file_src', 'upload_user']
+        fields = ['title', 'description', 'video_file_src']
 
 #class VideoStatsTracker(models.Model):
 #    viewer_ip = models.IPAddressField()

@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 #from django.template import Context, loader
 from django.shortcuts import render
 from offtube.models import Video, PartialVideoForm
+from django.contrib.auth.decorators import login_required
 
 def index(request):
     # Simplest way:
@@ -34,6 +35,8 @@ def play(request, **kwargs):
     context = {'video': video}
     return render(request, 'offtube/play.html', context)
 
+# FIXME: Looks ugly - is there a better way to do this?
+@login_required(login_url='../login/')
 def upload(request):
     if request.method == 'POST':
         # The form has been submitted...
@@ -41,7 +44,7 @@ def upload(request):
         if form.is_valid():
             # The form is valid
             video = form.save(commit=False)
-            #video.upload_user = 
+            video.upload_user = request.user
             video.thumbnail = video.get_location('png')
             video.status = 'Pending'
             video.video_file_ogg = video.get_location('ogg')

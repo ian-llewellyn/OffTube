@@ -46,11 +46,16 @@
                                 </ul>
                             </li>
                         </ul>
+                        {% if user.is_active %}
+                        <div class"span2 pull-right">Logged in: {{ user }}</div>
+                        <input type="button" class="btn pull-right" value="Log out"/>
+                        {% else %}
                         <form class="navbar-form pull-right">
                             <input class="span2" type="text" placeholder="Email">
                             <input class="span2" type="password" placeholder="Password">
-                            <button type="submit" class="btn">Sign in</button>
+                            <button type="submit" class="btn">Log in</button>
                         </form>
+                        {% endif %}
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
