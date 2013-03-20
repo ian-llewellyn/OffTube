@@ -47,7 +47,7 @@
                             </li>
                         </ul>
                         {% if user.is_active %}
-                        <div class"span2 pull-right">Logged in: {{ user }}</div>
+                        <div class"span2 pull-right">Logged in as: {{ user }}</div>
                         <input type="button" class="btn pull-right" value="Log out"/>
                         {% else %}
                         <form class="navbar-form pull-right">
@@ -62,9 +62,16 @@
         </div>
 
         <div class="container">
-
-                {% block content %}{% endblock %}
-
+            <div class="row-fluid">
+                <div class="span9">
+{% block content %}{% endblock %}
+                </div>
+                <div class="span3">
+                    <p>This is STATIC_URL: {{ STATIC_URL }}<br />
+                    This is MEDIA_URL: {{ MEDIA_URL }}<br />
+                    This is url offtube:index: {% url offtube:index %}</p>
+                </div>
+            </div>
             <hr>
 
             <footer>
