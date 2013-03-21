@@ -31,20 +31,21 @@
                     <a class="brand" href="{% url offtube:index %}"><img src="{{ STATIC_URL }}offtube/OffTube.png" alt="OffTube"></a>
                     <div class="nav-collapse collapse">
                         <!-- Everything you want hidden at 940px or less, place within here -->
-                        <button class="btn pull-right">Log out: <span class="badge">{{ user }}</span></button>
+{% if user.is_active %}
+                        <a class="btn pull-right" href="{% url offtube:logout %}">Log out: <span class="badge">{{ user }}</span></a>
+{% else %}
+                        <!--<form class="navbar-form pull-right">
+                            <input class="span2" type="text" placeholder="Email">
+                            <input class="span2" type="password" placeholder="Password">
+                            <button type="submit" class="btn">Log in</button>
+                        </form>-->
+                        <a class="btn pull-right" href="{% url offtube:login %}">Log in</a>
+{% endif %}
                         <input type="button" class="btn pull-right" value="Upload Video" onClick="window.location.href='{% url offtube:upload %}'"/>
                         <form class="navbar-form offset2">
                             <input type="text" class="span5">
                             <button type="submit" class="btn">Search</button>
                         </form>
-{% if user.is_active %}
-{% else %}
-                        <form class="navbar-form pull-right">
-                            <input class="span2" type="text" placeholder="Email">
-                            <input class="span2" type="password" placeholder="Password">
-                            <button type="submit" class="btn">Log in</button>
-                        </form>
-{% endif %}
                     </div><!--/.nav-collapse -->
                 </div>
             </div>

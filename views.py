@@ -4,6 +4,11 @@ from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.shortcuts import render
 from offtube.models import Video, PartialVideoForm
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as djlogout
+
+def logout(request):
+    djlogout(request)
+    return HttpResponseRedirect('/offtube/')
 
 def index(request):
     # Simplest way:
