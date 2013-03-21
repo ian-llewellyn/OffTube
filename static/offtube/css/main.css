@@ -7,10 +7,43 @@
   padding-bottom: 40px;
 }*/
 
+.navbar {
+  margin-bottom: 25px;
+}
+
+.navbar .brand {
+  padding: 12px 20px;
+}
+
+.navbar .brand img {
+  height: 41px;
+}
+
 .navbar-inner {
   min-height: 65px;
 }
-
-.navbar {
-  margin-bottom: 25px;
+.navbar .brand {
+  padding: 22.5px 20px 22.5px;
+}
+.navbar-text {
+  line-height: 65px;
+}
+.navbar .divider-vertical {
+  height: 65px;
+}
+.navbar .btn,
+.navbar .btn-group {
+  margin-top: 17.5px;
+}
+.navbar-form input,
+.navbar-form select,
+.navbar-form .radio,
+.navbar-form .checkbox {
+  margin-top: 17.5px;
+ }
+.navbar-search {
+  margin-top: 17.5px;
+}
+.navbar .nav > li > a {
+  padding: 22.5px 15px 22.5px;
 }
