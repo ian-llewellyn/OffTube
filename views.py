@@ -24,7 +24,7 @@ def index(request):
 
     # The shortcut way:
     recent_uploads = Video.objects.order_by('-upload_date').exclude(status='Pending') # FIXME: Limit required here.
-    context = {'recent_uploads': recent_uploads}
+    context = {'recent_uploads': recent_uploads, 'request': request}
     return render(request, 'offtube/index.html', context)
 
 def play(request, **kwargs):
@@ -37,7 +37,7 @@ def play(request, **kwargs):
         return HttpResponseNotFound("Nope.")
     video.hits += 1
     video.save()
-    context = {'video': video}
+    context = {'video': video, 'request': request}
     return render(request, 'offtube/play.html', context)
 
 # FIXME: Looks ugly - is there a better way to do this?
@@ -64,7 +64,7 @@ def upload(request):
     else:
         # First visit - display the form only
         form = PartialVideoForm()
-    context = {'video_form': form}
+    context = {'video_form': form, 'request': request}
     return render(request, 'offtube/upload.html', context)
 
 """
