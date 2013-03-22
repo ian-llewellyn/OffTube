@@ -35,9 +35,13 @@ def play(request, **kwargs):
         video = Video.objects.get(id=vid_id)
     except Video.DoesNotExist:
         return HttpResponseNotFound("Nope.")
+    try:
+        referer = request.META['HTTP_REFERER']
+    except KeyError:
+        referer = None
     video.hits += 1
     video.save()
-    context = {'video': video, 'request': request}
+    context = {'video': video, 'request': request, 'referer': referer}
     return render(request, 'offtube/play.html', context)
 
 # FIXME: Looks ugly - is there a better way to do this?
