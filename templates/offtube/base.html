@@ -56,13 +56,24 @@
                 <div class="span9">
 {% block content %}{% endblock %}
                 </div>
-                <div class="span3">
-                    <p>This is STATIC_URL: {{ STATIC_URL }}<br />
-                    This is MEDIA_URL: {{ MEDIA_URL }}<br />
-                    This is url offtube:index: {% url offtube:index %}<br />
-                    This is request.path: {{ request.path }}<br />
-                    This is request.get_full_path: {{ request.get_full_path }}<br />
-                    This is referer: {{ referer }}</p>
+                <div class="span3 well">
+                    <ul class="nav nav-list">
+                        <li class="nav-header">Most popular:</li>
+                        <li><a href="#">Past 7 days</a></li>
+                        <li><a href="#">Past month</a></li>
+                        <li><a href="#">All Time</a></li>
+                        <li class="nav-header">Categories</li>
+                        <li class="nav-header">Extra</li>
+                        <li><a href="#">My Videos{% if user.is_active %}: <span class="badge">4</span>{% endif %}</a></li>
+                        <li><a href="#">Uploaded videos: <span class="badge">15</span></a></li>
+                        <li class="nav-header">Debug</li>
+                        <li>STATIC_URL: {{ STATIC_URL }}</li>
+                        <li>MEDIA_URL: {{ MEDIA_URL }}</li>
+                        <li>url offtube:index: {% url offtube:index %}</li>
+                        <li>request.path: {{ request.path }}</li>
+                        <li>request.get_full_path: {{ request.get_full_path }}</li>
+                        <li>referer: {{ referer }}</li>
+                    </ul>
                 </div>
             </div>
             <hr>
