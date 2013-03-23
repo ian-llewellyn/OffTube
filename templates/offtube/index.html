@@ -5,11 +5,10 @@
         {% if forloop.counter0|divisibleby:3 %}
                 <ul class="thumbnails">
         {% endif %}
-                    <li class="span4" onClick="window.location.href='{% url offtube:play video.id %}'">
+                    <li class="span4" onClick="window.location.href='{% url offtube:play video.id %}'" style="cursor: pointer">
                         <div class="thumbnail">
                             <img src="{{ MEDIA_URL }}{{ video.thumbnail }}"><br />
                             <h4>{{ video.title|title }}</h4>
-                            <p>{{ video.description }}</p>
                         </div>
                     </li>
         {% if forloop.last or forloop.counter|divisibleby:3 %}

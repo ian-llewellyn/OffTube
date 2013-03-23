@@ -1,13 +1,13 @@
 {% extends "offtube/base.html" %}
 {% block styles %}
-.navbar {
+/*.navbar {
   margin-bottom: 0;
-}
+}*/
 {% endblock %}
 {% block content %}
 <!-- From: http://www.360doc.com/content/10/0426/21/11586_25036463.shtml -->
 {% if video %}
-<video class="span12" src="{{ MEDIA_URL }}{{ video.video_file_ogg }}" controls autoplay></video>
+<video class="span12" style="margin-top: -25px" src="{{ MEDIA_URL }}{{ video.video_file_ogg }}" controls autoplay></video>
 <p class="btn pull-right">Views: <span class="badge">{{ video.hits }}</span></p>
 <p class="btn pull-right">Uploaded by: <span class="badge">{{ video.upload_user }}</span></p>
 <h2>{{video.title}}</h2>
