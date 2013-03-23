@@ -39,7 +39,11 @@
                             <input class="span2" type="password" placeholder="Password">
                             <button type="submit" class="btn">Log in</button>
                         </form>-->
+    {% if request.path %}
                         <a class="btn pull-right" href="{% url offtube:login %}?next={{ request.path }}">Log in</a>
+    {% else %}
+                        <a class="btn pull-right disabled">Log in</a>
+    {% endif %}
 {% endif %}
                         <input type="button" class="btn pull-right" value="Upload Video" onClick="window.location.href='{% url offtube:upload %}'"/>
                         <form class="navbar-form offset2">
