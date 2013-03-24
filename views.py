@@ -25,7 +25,7 @@ def index(request):
     # The shortcut way:
     recent_uploads = Video.objects.order_by('-upload_date').exclude(status='Pending') # FIXME: Limit required here.
     context = {'recent_uploads': recent_uploads, 'request': request}
-    return render(request, 'offtube/list.html', context)
+    return render(request, 'offtube/index.html', context)
 
 def play(request, **kwargs):
     if not kwargs['video_id']:
@@ -48,11 +48,9 @@ def search(request):
     msg = ''
     if not request.GET.has_key('q'):
         return HttpResponseRedirect('/offtube/')
-    vids = Video.objects.all()
-    for entry in request.GET:
-        msg += entry
-        msg += ': ' + request.GET[entry]
-    return HttpResponse(msg)
+    vids = Video.objects.filter(title__icontains=request.GET['q'].lower())
+    context = {'recent_uploads': vids, 'request': request}
+    return render(request, 'offtube/list.html', context)
 
 # FIXME: Looks ugly - is there a better way to do this?
 @login_required(login_url='../login/')
