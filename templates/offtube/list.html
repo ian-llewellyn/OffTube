@@ -1,0 +1,17 @@
+{% extends "offtube/base.html" %}
+{% block content %}
+{% if recent_uploads %}
+    {% for video in recent_uploads %}
+                    <ul class="thumbnails">
+                        <div class="thumbnail clearfix" onClick="window.location.href='{% url offtube:play video.id %}'" style="cursor: pointer">
+                            <img class="pull-left" src="{{ MEDIA_URL }}{{ video.thumbnail }}">
+                            <h4>{{ video.title|title }}</h4>
+                        </div>
+                    </ul>
+    {% endfor %}
+{% else %}
+            <div class="alert alert-info">
+                <strong>Info:</strong> There ain't no videos yet.
+            </div>
+{% endif %}
+{% endblock %}
