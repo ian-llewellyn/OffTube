@@ -7,7 +7,7 @@
         {% endif %}
                     <li class="span4" onClick="window.location.href='{% url offtube:play video.id %}'" style="cursor: pointer">
                         <div class="thumbnail">
-                            <img src="{{ MEDIA_URL }}{{ video.thumbnail }}"><br />
+                            <img src="{{ MEDIA_URL }}{{ video.get_png_file }}"><br />
                             <h4>{{ video.title|title }}</h4>
                         </div>
                     </li>

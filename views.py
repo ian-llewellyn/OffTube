@@ -23,7 +23,7 @@ def index(request):
     #return HttpResponse(template.render(context))
 
     # The shortcut way:
-    recent_uploads = Video.objects.order_by('-upload_date').exclude(status='Pending') # FIXME: Limit required here.
+    recent_uploads = Video.objects.order_by('-upload_date').exclude(status='pending') # FIXME: Limit required here.
     context = {'recent_uploads': recent_uploads, 'request': request}
     return render(request, 'offtube/index.html', context)
 
@@ -62,10 +62,10 @@ def upload(request):
             # The form is valid
             video = form.save(commit=False)
             video.upload_user = request.user
-            video.thumbnail = video.get_location('png')
-            video.status = 'Pending'
-            video.video_file_ogg = video.get_location('ogg')
+            video.status = 'pending'
             video.save()
+            form.save_m2m()
+            print video
             return HttpResponseRedirect('/offtube/')
             # See the output of ffmpeg
         # The POSTed form is invalid

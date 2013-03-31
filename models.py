@@ -1,46 +1,89 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.forms import ModelForm
-from time import strftime
-from os.path import splitext
 # Create your models here.
 
+class Format(models.Model):
+    name = models.CharField(max_length=20)
+    transcode_string = models.CharField(max_length=1000)
+    file_extension = models.CharField(max_length=10)
+
+    def __unicode__(self):
+        return self.name
+
 class Video(models.Model):
+    STATUS_CHOICES=[("uploading", "Uploading"),
+            ("transcoding", "Transcoding"),
+            ("ready", "Ready"),
+            ("pending", "Pending")]
     title = models.CharField(max_length=160, verbose_name="Video Title")
     upload_user = models.ForeignKey(User,
         help_text="The user that uploaded the video.")
     description = models.TextField(blank=True,
         help_text="An optional description for the video")
-    thumbnail = models.CharField(max_length=100,
-        help_text="An automatically generated thumbnail for the video")
-    video_file_ogg = models.CharField(max_length=100,
-        help_text="The transmografied file - ready for consumption")
-    video_file_src = models.FileField(upload_to='offtube/upload/%Y/%m%d/',
+    source_file = models.FileField(upload_to='offtube/upload/%Y/%m%d/',
         help_text="The user-uploaded file")
+    delivery_formats = models.ManyToManyField(Format, blank=False,
+        help_text="Which formats are available for this video",
+        default=[i.id for i in Format.objects.all()])
     upload_date = models.DateTimeField(auto_now_add=True,
         help_text="The dat and time the video was uploaded")
     #duration = models.PositiveIntegerField()
+    #privacy_profile = models.ForeignKey(PrivacyProfile)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES,
+        help_text="The current status of the video file")
     hits = models.PositiveIntegerField(default=0,
         help_text="The number of views the video has received")
-    #privacy_profile = models.ForeignKey(PrivacyProfile)
-    status = models.CharField(max_length=20,
-        help_text="The current status of the video file",
-        choices=[("Uploading", "Uploading"),
-            ("Transcoding", "Transcoding"),
-            ("Ready", "Ready"),
-            ("Pending", "Pending")])
     # A field to measure popularity over time
     # - possibility a one-to-many relationship with a VideoTracker model
 
-    def get_location(self, extension):
-        # Put offtube/ogg/%Y/%m%d/ at the start
-        datepart = strftime('%Y/%m%d')
-        output_file = 'offtube/%s/%s/%s' % (extension, datepart, self.video_file_src)
-        # Strip .* from the end
-        output_file = splitext(output_file)[0]
-        # Put .ogg at the end
-        output_file += '.' + extension
-        return output_file
+    def _get_format(self, fmt):
+        return 'offtube/%s/%s/%i.%s' % (fmt,
+            self.upload_date.strftime('%Y/%m%d'),
+            self.id, fmt)
+
+    @property
+    def get_png_file(self):
+        return self._get_format('png')
+
+    @property
+    def get_ogg_file(self):
+        return self._get_format('ogg')
+
+    @property
+    def get_h264_file(self):
+        return self._get_format('h264')
+
+    @property
+    def get_webm_file(self):
+        return self._get_format('webm')
+
+    def convert_all(self):
+        import subprocess
+        import os
+        from django.conf import settings
+        MEDIA_ROOT = settings.MEDIA_ROOT
+
+        input_file = self.source_file
+        for delivery_format in self.delivery_formats.all():
+            output_file = self._get_format(delivery_format.file_extension)
+            # Ensure the containing directory exists
+            if not os.path.exists(os.path.dirname(MEDIA_ROOT + output_file)):
+                os.makedirs(os.path.dirname(MEDIA_ROOT + output_file))
+            # Prepare the command with substitutions
+            command = delivery_format.transcode_string \
+                .replace('%in_file%', input_file.name) \
+                .replace('%out_file%', output_file)
+            try:
+                # Run the transcode command
+                print command
+                status = subprocess.call(command.split(' '), cwd=MEDIA_ROOT)
+            except:
+                # Log an error if it fails
+                print 'Return code: %d from command: %s' % (status, command)
+                pass
+        # Transcoding complete - the video is ready to be watched
+        return True
 
     def __unicode__(self):
         # Example:
@@ -50,7 +93,7 @@ class Video(models.Model):
 class PartialVideoForm(ModelForm):
     class Meta:
         model = Video
-        fields = ['title', 'description', 'video_file_src']
+        fields = ['title', 'description', 'source_file', 'delivery_formats']
 
 #class VideoStatsTracker(models.Model):
 #    viewer_ip = models.IPAddressField()
