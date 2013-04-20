@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.forms import ModelForm
 # Create your models here.
 
+
 class Format(models.Model):
     name = models.CharField(max_length=20)
     transcode_string = models.CharField(max_length=1000)
@@ -11,8 +12,9 @@ class Format(models.Model):
     def __unicode__(self):
         return self.name
 
+
 class Video(models.Model):
-    STATUS_CHOICES=[("uploading", "Uploading"),
+    STATUS_CHOICES = [("uploading", "Uploading"),
             ("transcoding", "Transcoding"),
             ("ready", "Ready"),
             ("pending", "Pending")]
@@ -49,7 +51,8 @@ class Video(models.Model):
 
     for fmt in Format.objects.all():
         extension = fmt.file_extension
-        locals()['get_' + extension + '_file'] = property(get_format_func(extension))
+        locals()['get_' + extension + '_file'] = property(
+            get_format_func(extension))
 
     def convert_all(self):
         import subprocess
@@ -81,7 +84,9 @@ class Video(models.Model):
     def __unicode__(self):
         # Example:
         # 2013-12-12T14:36:15: Ready: Clip of a Man on a Bridge
-        return "%s: %s: %s" % (self.upload_date.ctime(), self.status, self.title)
+        return "%s: %s: %s" % (
+            self.upload_date.ctime(), self.status, self.title)
+
 
 class PartialVideoForm(ModelForm):
     class Meta:
