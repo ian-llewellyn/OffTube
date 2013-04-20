@@ -37,26 +37,19 @@ class Video(models.Model):
     # A field to measure popularity over time
     # - possibility a one-to-many relationship with a VideoTracker model
 
-    def _get_format(self, fmt):
-        return 'offtube/%s/%s/%i.%s' % (fmt,
-            self.upload_date.strftime('%Y/%m%d'),
-            self.id, fmt)
+    def get_format_func(fmt):
+        def format_func(self):
+            if not self.upload_date:
+                return None
+            return 'offtube/%s/%s/%i.%s' % (fmt,
+                self.upload_date.strftime('%Y/%m%d'),
+                self.id, fmt)
+        format_func.__name__ = 'get_' + str(fmt) + '_file'
+        return format_func
 
-    @property
-    def get_png_file(self):
-        return self._get_format('png')
-
-    @property
-    def get_ogg_file(self):
-        return self._get_format('ogg')
-
-    @property
-    def get_h264_file(self):
-        return self._get_format('h264')
-
-    @property
-    def get_webm_file(self):
-        return self._get_format('webm')
+    for fmt in Format.objects.all():
+        extension = fmt.file_extension
+        locals()['get_' + extension + '_file'] = property(get_format_func(extension))
 
     def convert_all(self):
         import subprocess
