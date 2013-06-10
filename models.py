@@ -62,7 +62,8 @@ class Video(models.Model):
 
         input_file = self.source_file
         for delivery_format in self.delivery_formats.all():
-            output_file = self._get_format(delivery_format.file_extension)
+            output_file = getattr(self,
+              'get_' + delivery_format.file_extension + '_file')
             # Ensure the containing directory exists
             if not os.path.exists(os.path.dirname(MEDIA_ROOT + output_file)):
                 os.makedirs(os.path.dirname(MEDIA_ROOT + output_file))
