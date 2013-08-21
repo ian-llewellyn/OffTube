@@ -12,8 +12,8 @@
   <source src="{{ MEDIA_URL }}{{ video.get_webm_file }}" type="video/webm; codecs=vp8,vorbis">
   <source src="{{ MEDIA_URL }}{{ video.get_ogg_file }}"  type="video/ogg; codecs=theora,vorbis">
 </video>
-<p class="btn pull-right">Views: <span class="badge">{{ video.hits }}</span></p>
-<p class="btn pull-right">Uploaded by: <span class="badge">{{ video.upload_user }}</span></p>
+<p class="btn pull-right" style="cursor: default">Views: <span class="badge">{{ video.hits }}</span></p>
+<p class="btn pull-right" style="cursor: default">Uploaded by: <span class="badge">{{ video.upload_user }}</span></p>
 <h2>{{video.title}}</h2>
 <p>{{ video.description }}</p>
 {% endif %}

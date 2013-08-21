@@ -29,12 +29,12 @@ def index(request):
 
 def play(request, **kwargs):
     if not kwargs['video_id']:
-        return HttpResponse("Error: You need the video_id to play.")
+        return HttpResponse('Error: You need the video_id to play.')
     vid_id = kwargs['video_id']
     try:
         video = Video.objects.get(id=vid_id)
     except Video.DoesNotExist:
-        return HttpResponseNotFound("Nope.")
+        return HttpResponseNotFound('Nope.')
     try:
         referer = request.META['HTTP_REFERER']
     except KeyError:
@@ -42,14 +42,29 @@ def play(request, **kwargs):
     video.hits += 1
     video.save()
     context = {'video': video, 'request': request, 'referer': referer}
-    return render(request, 'offtube/play.html', context)
+    if request.path.split('/')[-2] == 'play':
+        return render(request, 'offtube/play.html', context)
+    if request.path.split('/')[-2] == 'embed':
+        return render(request, 'offtube/embed.html', context)
 
 def search(request):
     msg = ''
     if not request.GET.has_key('q'):
         return HttpResponseRedirect('/offtube/')
     vids = Video.objects.filter(title__icontains=request.GET['q'].lower())
-    context = {'recent_uploads': vids, 'request': request}
+    context = {'results': vids, 'request': request}
+    return render(request, 'offtube/list.html', context)
+
+def popular(request, **kwargs):
+    if kwargs['period']:
+        from datetime import datetime, timedelta
+
+        cutoff = datetime.now() - timedelta(days=int(kwargs['period']))
+        vids = Video.objects.filter(upload_date__gte=cutoff).order_by('-hits')
+    else:
+        vids = Video.objects.order_by('-hits')
+
+    context = {'results': vids, 'request': request}
     return render(request, 'offtube/list.html', context)
 
 # FIXME: Looks ugly - is there a better way to do this?
