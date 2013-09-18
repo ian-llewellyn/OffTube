@@ -24,7 +24,10 @@ def index(request):
 
     # The shortcut way:
     recent_uploads = Video.objects.order_by('-upload_date').exclude(status='pending') # FIXME: Limit required here.
-    context = {'recent_uploads': recent_uploads, 'request': request}
+    total_vids = Video.objects.count()
+    context = {'recent_uploads': recent_uploads,
+        'total_vids': total_vids,
+        'request': request}
     return render(request, 'offtube/index.html', context)
 
 def play(request, **kwargs):
@@ -41,7 +44,17 @@ def play(request, **kwargs):
         referer = None
     video.hits += 1
     video.save()
-    context = {'video': video, 'request': request, 'referer': referer}
+    total_vids = Video.objects.count()
+
+    from django.contrib.sites.models import Site
+
+    current_site = Site.objects.get_current()
+
+    context = {'video': video,
+        'referer': referer,
+        'total_vids': total_vids,
+        'domain': current_site.domain,
+        'request': request}
     if request.path.split('/')[-2] == 'play':
         return render(request, 'offtube/play.html', context)
     if request.path.split('/')[-2] == 'embed':
@@ -52,7 +65,10 @@ def search(request):
     if not request.GET.has_key('q'):
         return HttpResponseRedirect('/offtube/')
     vids = Video.objects.filter(title__icontains=request.GET['q'].lower())
-    context = {'results': vids, 'request': request}
+    total_vids = Video.objects.count()
+    context = {'results': vids,
+        'total_vids': total_vids,
+        'request': request}
     return render(request, 'offtube/list.html', context)
 
 def popular(request, **kwargs):
@@ -64,7 +80,24 @@ def popular(request, **kwargs):
     else:
         vids = Video.objects.order_by('-hits')
 
-    context = {'results': vids, 'request': request}
+    total_vids = Video.objects.count()
+    context = {'results': vids,
+        'total_vids': total_vids,
+        'request': request}
+    return render(request, 'offtube/list.html', context)
+
+def videos(request, **kwargs):
+    if not kwargs['username']:
+        return HttpResponse('Error: You need to specify a username.')
+
+    username = kwargs['username']
+    vids = Video.objects.filter(
+        upload_user__username=username).order_by('upload_date')
+
+    total_vids = Video.objects.count()
+    context = {'results': vids,
+        'total_vids': total_vids,
+        'request': request}
     return render(request, 'offtube/list.html', context)
 
 # FIXME: Looks ugly - is there a better way to do this?
@@ -91,7 +124,10 @@ def upload(request):
     else:
         # First visit - display the form only
         form = PartialVideoForm()
-    context = {'video_form': form, 'request': request}
+    total_vids = Video.objects.count()
+    context = {'video_form': form,
+        'total_vids': total_vids,
+        'request': request}
     return render(request, 'offtube/upload.html', context)
 
 """

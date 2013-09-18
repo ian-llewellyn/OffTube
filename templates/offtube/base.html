@@ -66,24 +66,26 @@
                         <li><a href="{% url offtube:popular 7 %}">Past 7 days</a></li>
                         <li><a href="{% url offtube:popular 31 %}">Past month</a></li>
                         <li><a href="{% url offtube:popular %}">All Time</a></li>
-                        <li class="nav-header">Categories</li>
+<!--                        <li class="nav-header">Categories</li> -->
                         <li class="nav-header">Extra</li>
-                        <li><a href="#">My Videos{% if user.is_active %}: <span class="badge">{{ user.video_set.count }}</span>{% endif %}</a></li>
-                        <li>Uploaded videos: <span class="badge">15</span></li>
-                        <li class="nav-header">Debug</li>
+                        {% if user.is_active %}
+<li><a href="{% url offtube:videos %}{{ user.username }}">My Videos: <span class="badge">{{ user.video_set.count }}</span></a></li>
+                        {% endif %}
+                        <li>Total videos: <span class="badge">{{ total_vids }}</span></li>
+<!--                        <li class="nav-header">Debug</li>
                         <li>STATIC_URL: {{ STATIC_URL }}</li>
                         <li>MEDIA_URL: {{ MEDIA_URL }}</li>
                         <li>url offtube:index: {% url offtube:index %}</li>
                         <li>request.path: {{ request.path }}</li>
                         <li>request.get_full_path: {{ request.get_full_path }}</li>
-                        <li>referer: {{ referer }}</li>
+                        <li>referer: {{ referer }}</li> -->
                     </ul>
                 </div>
             </div>
             <hr>
 
             <footer>
-                <p>&copy; Company 2012</p>
+                <p>&copy; Company 2013</p>
             </footer>
 
         </div> <!-- /container -->

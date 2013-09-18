@@ -16,5 +16,9 @@
 <p class="btn pull-right" style="cursor: default">Uploaded by: <span class="badge">{{ video.upload_user }}</span></p>
 <h2>{{video.title}}</h2>
 <p>{{ video.description }}</p>
+<p>Embed code:<br />
+<textarea class="span9">
+&lt;iframe width="480" height="360" src="//{{ domain }}/{% url offtube:embed video.id %}" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
+</textarea></p>
 {% endif %}
 {% endblock %}
