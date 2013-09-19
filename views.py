@@ -1,3 +1,5 @@
+""" This is the views.py file for the OffTube project. """
+
 # Create your views here.
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 #from django.template import Context, loader
@@ -7,10 +9,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as djlogout
 
 def logout(request):
+    """ Very simple view to logout of the site. """
     djlogout(request)
     return HttpResponseRedirect('/offtube/')
 
 def index(request):
+    """ This is the view for the main OffTube homepage. It simply finds
+    a list of all uploaded Videos and puts the latest first. """
     # Simplest way:
     #return HttpResponse("Hello World - I'm watching you.")
 
@@ -23,7 +28,9 @@ def index(request):
     #return HttpResponse(template.render(context))
 
     # The shortcut way:
-    recent_uploads = Video.objects.order_by('-upload_date').exclude(status='pending') # FIXME: Limit required here.
+    # FIXME: Limit required here.
+    recent_uploads = Video.objects.order_by('-upload_date').exclude(
+        status='pending')
     total_vids = Video.objects.count()
     context = {'recent_uploads': recent_uploads,
         'total_vids': total_vids,
@@ -31,6 +38,7 @@ def index(request):
     return render(request, 'offtube/index.html', context)
 
 def play(request, **kwargs):
+    """ This view grabs everything necessary for the main Video view page. """
     if not kwargs['video_id']:
         return HttpResponse('Error: You need the video_id to play.')
     vid_id = kwargs['video_id']
@@ -61,7 +69,7 @@ def play(request, **kwargs):
         return render(request, 'offtube/embed.html', context)
 
 def search(request):
-    msg = ''
+    """ This view searches for any Videos with the query in their title. """
     if not request.GET.has_key('q'):
         return HttpResponseRedirect('/offtube/')
     vids = Video.objects.filter(title__icontains=request.GET['q'].lower())
@@ -72,6 +80,8 @@ def search(request):
     return render(request, 'offtube/list.html', context)
 
 def popular(request, **kwargs):
+    """ This view obtains the most popular videos of all time, or in the past
+    X number of days (provided by the period kwarg. """
     if kwargs['period']:
         from datetime import datetime, timedelta
 
@@ -87,6 +97,7 @@ def popular(request, **kwargs):
     return render(request, 'offtube/list.html', context)
 
 def videos(request, **kwargs):
+    """ This view lists all Videos uploaded by a certain user. """
     if not kwargs['username']:
         return HttpResponse('Error: You need to specify a username.')
 
@@ -103,6 +114,8 @@ def videos(request, **kwargs):
 # FIXME: Looks ugly - is there a better way to do this?
 @login_required(login_url='../login/')
 def upload(request):
+    """ This is the view that handles the upload stages of a Video, both
+    before and after the POST has occurred. """
     if request.method == 'POST':
         # The form has been submitted...
         form = PartialVideoForm(request.POST, request.FILES)
@@ -113,14 +126,11 @@ def upload(request):
             video.status = 'pending'
             video.save()
             form.save_m2m()
-            print video
             return HttpResponseRedirect('/offtube/')
-            # See the output of ffmpeg
-        # The POSTed form is invalid
-        #j = 5
-        #ak = "abc: %s :cba" % type(j)
-        #raise Ecxeption
-        #return HttpResponse(ak)
+            # Would be nice to see the output of ffmpeg after upload...
+        else:
+            # The POSTed form is invalid
+            return HttpResponse('Error: You need to specify a username.')
     else:
         # First visit - display the form only
         form = PartialVideoForm()
@@ -129,17 +139,3 @@ def upload(request):
         'total_vids': total_vids,
         'request': request}
     return render(request, 'offtube/upload.html', context)
-
-"""
-From: http://www.360doc.com/content/10/0426/21/11586_25036463.shtml
-
-def v_addvideo(request, submissionid):
-    manipulator = VideoSubmission.AddManipulator()
-    form = FormWrapper(manipulator,{},{})
-    params = {'userAccount':request.user,'form':form,}
-    c = Context(request, params)
-    t = loader.get_template('video/addvideo.html')
-    sub = Submission.objects.get(pk=submissionid)
-    params['submission'] = sub
-    return HttpResponse( t.render( c ) )
-"""

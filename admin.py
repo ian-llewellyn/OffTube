@@ -1,3 +1,5 @@
+""" OffTube admin.py file. """
+
 from offtube.models import Video, Format
 from django.contrib import admin
 

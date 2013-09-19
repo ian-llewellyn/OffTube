@@ -1,3 +1,4 @@
+""" url paterns file for OffTube project. """
 from django.conf.urls import patterns, url
 
 from offtube import views
@@ -11,6 +12,7 @@ urlpatterns = patterns('',
     url(r'^videos/(?P<username>\S+)?$', views.videos, name='videos'),
     url(r'^search/$', views.search, name='search'),
     url(r'^upload/$', views.upload, name='upload'),
-    url(r'^login/$', 'django.contrib.auth.views.login', {'template_name': 'offtube/login.html'}, name='login'),
+    url(r'^login/$', 'django.contrib.auth.views.login',
+        {'template_name': 'offtube/login.html'}, name='login'),
     url(r'^logout/$', views.logout, name='logout'),
 )
