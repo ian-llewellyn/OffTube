@@ -15,10 +15,25 @@
 <p class="btn pull-right" style="cursor: default">Views: <span class="badge">{{ video.hits }}</span></p>
 <p class="btn pull-right" style="cursor: default">Uploaded by: <span class="badge">{{ video.upload_user }}</span></p>
 <h2>{{video.title}}</h2>
-<p>{{ video.description }}</p>
-<p>Embed code:<br />
+<script type="text/javascript">
+function toggleTab(link) {
+    allDivs = document.getElementsByClassName('tab-contents')
+    for (i=0; i<allDivs.length; i++) {
+        allDivs[i].style.display='none'
+    }
+    divName = link.href.split('#')[1]
+    div = document.getElementById(divName)
+    div.style.display='block'
+}
+</script>
+<ul class="nav nav-tabs" id="MyTab">
+  <li class="active"><a href="#description" onClick="toggleTab(this)" data-toggle="tab">Description</a></li>
+  <li><a href="#share" onClick="toggleTab(this)" data-toggle="tab">Share</a></li>
+</ul>
+<div id="description" class="span8 tab-contents">{{ video.description }}</div>
+<div id="share" class="tab-contents" style="display: none"><b>Embed code:</b><br />
 <textarea class="span9">
 &lt;iframe width="480" height="360" src="//{{ domain }}/{% url offtube:embed video.id %}" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
-</textarea></p>
+</textarea></div>
 {% endif %}
 {% endblock %}
