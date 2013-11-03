@@ -3,10 +3,19 @@
 {% if results %}
     {% for video in results %}
                     <ul class="thumbnails">
-                        <div class="thumbnail clearfix" onClick="window.location.href='{% url offtube:play video.id %}'" style="cursor: pointer">
-                            <img class="pull-left" src="{{ MEDIA_URL }}{{ video.get_png_file }}">
-                            <h4>{{ video.title|title }}</h4>
-                        </div>
+                        <li class="span12">
+                        <a href="{% url offtube:play video.id %}" class="thumbnail" onMouseOver="this.style.textDecoration='none'" style="display: block">
+                            <img src="{{ MEDIA_URL }}{{ video.get_png_file }}" style="float: left; margin-right: 10px">
+                            <div style="height: 170px">
+                                <h4>{{ video.title|title }}</h4>
+                                <hr style="margin: 0 10px 5px">
+                                <h5 style="display: inline">Uploaded by:</h5><span> {{ video.upload_user }}<br /></span>
+                                <h5 style="display: inline">Views:</h5><span> {{ video.hits }}</span>
+                                <h5 style="margin: 0">Description:</h5>
+                                <p>{{ video.description }}</p>
+                            </div>
+                        </a>
+                        </li>
                     </ul>
     {% endfor %}
 {% else %}
