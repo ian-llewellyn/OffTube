@@ -18,13 +18,23 @@
 <ul class="nav nav-tabs" id="MyTab">
   <li class="active"><a href="#description" data-toggle="tab">Description</a></li>
   <li><a href="#share" data-toggle="tab">Share</a></li>
+  <li><a href="#edit" data-toggle="tab">Edit Video</a></li>
 </ul>
 <div class="tab-content">
-  <div class="tab-pane active" id="description">{{ video.description }}</div>
+  <div class="tab-pane active" id="description"><div class="span9">{{ video.description }}</div></div>
   <div class="tab-pane" id="share"><b>Embed code:</b><br />
   <textarea class="span9">
-&lt;iframe width="480" height="360" src="//{{ domain }}/{% url offtube:embed video.id %}" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;
-</textarea>
+&lt;iframe width="480" height="360" src="//{{ domain }}/{% url offtube:embed video.id %}" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;</textarea>
+  </div>
+  <div class="tab-pane" id="edit">
+    <label>Title:</label>
+    <input class="span9" type="text" name="title" value="{{ video.title }}" /><br />
+    <label>Description:</label>
+    <textarea class="span9" name="description">{{ video.description }}</textarea><br />
+    <label>Delivery Formats:</label>
+    <input type="checkbox" name="png"> PNG<br />
+    <a class="btn btn-primary">Save Details</a>
+    <a class="btn btn-danger">Delete Video</a>
   </div>
 </div>
 {% endif %}
