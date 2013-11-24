@@ -35,6 +35,10 @@
     {{ video_form.as_p }}
     <input class="btn btn-primary" type="submit">
     </form>
+    <form action="{% url offtube:delete video.id %}" method="post">
+      {% csrf_token %}
+      <input class="btn btn-danger" type="submit" value="Delete!">
+    </form>
     {% endif %}
   </div>
 </div>

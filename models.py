@@ -50,6 +50,31 @@ class Video(models.Model):
     # A field to measure popularity over time
     # - possibility a one-to-many relationship with a VideoTracker model
 
+    from django.db.models.signals import pre_delete
+    from django.dispatch import receiver
+
+    @receiver(pre_delete)
+    def delete_files(sender, instance, **kwargs):
+        """ Used primarily when deletes are called on Video objects. This method
+            deletes the files associated with a Video. """
+        if sender != Video:
+            return
+        import os
+        from django.conf import settings
+        media_root = settings.MEDIA_ROOT.rstrip(os.path.sep)
+
+        # Build a list of files associated with this Video object
+        associated_files = [instance.source_file.path]
+        for fmt in instance.delivery_formats.all():
+            extension = fmt.file_extension
+            associated_files.append(os.path.sep.join(
+                [media_root, getattr(instance, 'get_' + extension + '_file')]))
+
+        # Deleta files associated with this Video object (if they exist)
+        for f in associated_files:
+            if os.path.exists(f):
+                os.unlink(f)
+
     def get_format_func(fmt):
         """ Produce a function that returns the file for a given format. """
         def format_func(self):

@@ -114,6 +114,16 @@ def videos(request, **kwargs):
         'request': request}
     return render(request, 'offtube/list.html', context)
 
+def delete(request, video_id=None):
+    """ This view deleted the video and associated files when called. """
+    original_video = Video.objects.get(id=video_id)
+    if request.user != original_video.upload_user:
+        return HttpResponse('Error: You do not have permission to edit '
+            'this video')
+
+    original_video.delete()
+    return HttpResponseRedirect('/offtube/')
+
 def edit(request, video_id=None):
     """ This view modifies the metadata of a video some time after it has been
         uploaded. """
