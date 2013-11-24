@@ -18,7 +18,9 @@
 <ul class="nav nav-tabs" id="MyTab">
   <li class="active"><a href="#description" data-toggle="tab">Description</a></li>
   <li><a href="#share" data-toggle="tab">Share</a></li>
+  {% if user == video.upload_user %}
   <li><a href="#edit" data-toggle="tab">Edit Video</a></li>
+  {% endif %}
 </ul>
 <div class="tab-content">
   <div class="tab-pane active" id="description"><div class="span9">{{ video.description }}</div></div>
@@ -27,14 +29,13 @@
 &lt;iframe width="480" height="360" src="//{{ domain }}/{% url offtube:embed video.id %}" frameborder="0" allowfullscreen&gt;&lt;/iframe&gt;</textarea>
   </div>
   <div class="tab-pane" id="edit">
-    <label>Title:</label>
-    <input class="span9" type="text" name="title" value="{{ video.title }}" /><br />
-    <label>Description:</label>
-    <textarea class="span9" name="description">{{ video.description }}</textarea><br />
-    <label>Delivery Formats:</label>
-    <input type="checkbox" name="png"> PNG<br />
-    <a class="btn btn-primary">Save Details</a>
-    <a class="btn btn-danger">Delete Video</a>
+    {% if user == video.upload_user %}
+    <form action="{% url offtube:edit video.id %}" method="post" enctype="multipar   t/form-data">
+    {% csrf_token %}
+    {{ video_form.as_p }}
+    <input class="btn btn-primary" type="submit">
+    </form>
+    {% endif %}
   </div>
 </div>
 {% endif %}

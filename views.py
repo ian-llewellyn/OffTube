@@ -52,6 +52,8 @@ def play(request, **kwargs):
         referer = None
     video.hits += 1
     video.save()
+    form = PartialVideoForm(instance=video)
+
     total_vids = Video.objects.count()
 
     from django.contrib.sites.models import Site
@@ -59,6 +61,7 @@ def play(request, **kwargs):
     current_site = Site.objects.get_current()
 
     context = {'video': video,
+        'video_form': form,
         'referer': referer,
         'total_vids': total_vids,
         'domain': current_site.domain,
@@ -111,31 +114,52 @@ def videos(request, **kwargs):
         'request': request}
     return render(request, 'offtube/list.html', context)
 
+def edit(request, video_id=None):
+    """ This view modifies the metadata of a video some time after it has been
+        uploaded. """
+    if request.method != 'POST':
+        return HttpResponse('Error: You must select a video and then edit it.')
+
+    # The form has been submitted...
+    original_video = Video.objects.get(id=video_id)
+    form = PartialVideoForm(request.POST, request.FILES,
+        instance=original_video)
+
+    if not form.is_valid():
+        return HttpResponse('Error: The data you submitted is not valid.')
+
+    if request.user != original_video.upload_user:
+        return HttpResponse('Error: You do not have permission to edit '
+            'this video')
+
+    video = form.save()
+    return HttpResponseRedirect('/offtube/play/' + str(video_id))
+
 # FIXME: Looks ugly - is there a better way to do this?
 @login_required(login_url='../login/')
 def upload(request):
     """ This is the view that handles the upload stages of a Video, both
     before and after the POST has occurred. """
-    if request.method == 'POST':
-        # The form has been submitted...
-        form = PartialVideoForm(request.POST, request.FILES)
-        if form.is_valid():
-            # The form is valid
-            video = form.save(commit=False)
-            video.upload_user = request.user
-            video.status = 'pending'
-            video.save()
-            form.save_m2m()
-            return HttpResponseRedirect('/offtube/')
-            # Would be nice to see the output of ffmpeg after upload...
-        else:
-            # The POSTed form is invalid
-            return HttpResponse('Error: You need to specify a username.')
-    else:
+    if request.method != 'POST':
         # First visit - display the form only
         form = PartialVideoForm()
-    total_vids = Video.objects.count()
-    context = {'video_form': form,
-        'total_vids': total_vids,
-        'request': request}
-    return render(request, 'offtube/upload.html', context)
+        total_vids = Video.objects.count()
+        context = {'video_form': form,
+            'total_vids': total_vids,
+            'request': request}
+        return render(request, 'offtube/upload.html', context)
+
+    # The form has been submitted...
+    form = PartialVideoForm(request.POST, request.FILES)
+    if not form.is_valid():
+        # The POSTed form is invalid
+        return HttpResponse('Error: You need to specify a username. %s' % form.errors)
+
+    # The form is valid
+    video = form.save(commit=False)
+    video.upload_user = request.user
+    video.status = 'pending'
+    video.save()
+    form.save_m2m()
+    return HttpResponseRedirect('/offtube/')
+    # Would be nice to see the output of ffmpeg after upload...
