@@ -29,28 +29,25 @@
                 <div class="container">
                     <!-- Be sure to leave the brand here if you want it shown -->
                     <a class="brand" href="{% url offtube:index %}"><img src="{{ STATIC_URL }}offtube/OffTube.png" alt="OffTube"></a>
-                    <div class="nav-collapse collapse">
-                        <!-- Everything you want hidden at 940px or less, place within here -->
 {% if user.is_active %}
-                        <a class="btn pull-right" href="{% url offtube:logout %}">Log out: <span class="badge">{{ user }}</span></a>
+                    <a class="btn pull-right" href="{% url offtube:logout %}">Log out: <span class="badge">{{ user }}</span></a>
 {% else %}
-                        <!--<form class="navbar-form pull-right">
-                            <input class="span2" type="text" placeholder="Email">
-                            <input class="span2" type="password" placeholder="Password">
-                            <button type="submit" class="btn">Log in</button>
-                        </form>-->
+                    <!--<form class="navbar-form pull-right">
+                        <input class="span2" type="text" placeholder="Email">
+                        <input class="span2" type="password" placeholder="Password">
+                        <button type="submit" class="btn">Log in</button>
+                    </form>-->
     {% if request.path %}
-                        <a class="btn pull-right" href="{% url offtube:login %}?next={{ request.path }}">Log in</a>
+                    <a class="btn pull-right" href="{% url offtube:login %}?next={{ request.path }}">Log in</a>
     {% else %}
-                        <a class="btn pull-right disabled">Log in</a>
+                    <a class="btn pull-right disabled">Log in</a>
     {% endif %}
 {% endif %}
-                        <input type="button" class="btn pull-right" value="Upload Video" onClick="window.location.href='{% url offtube:upload %}'"/>
-                        <form class="navbar-form offset2" action="{% url offtube:search %}" method="get">
-                            <input type="text" class="span5" name="q">
-                            <button type="submit" class="btn">Search</button>
-                        </form>
-                    </div><!--/.nav-collapse -->
+                    <input type="button" class="btn pull-right" value="Upload Video" onClick="window.location.href='{% url offtube:upload %}'"/>
+                    <form class="navbar-form offset2" action="{% url offtube:search %}" method="get">
+                        <input type="text" class="span5" name="q">
+                        <button type="submit" class="btn">Search</button>
+                    </form>
                 </div>
             </div>
         </div>
